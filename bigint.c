@@ -1,4 +1,5 @@
 #include "stdio.h"
+#include "time.h"
 const int KEYSIZE = 256; // number of unsigned chars in key
 
 void zero(unsigned char a[KEYSIZE]) {int k;for(k=0;k<KEYSIZE;++k)a[k]=0;}
@@ -43,14 +44,31 @@ void multiply_digit(unsigned char a[KEYSIZE], unsigned char d, unsigned char res
   }
 }
 void multiply(unsigned char a[KEYSIZE], unsigned char b[KEYSIZE], unsigned char result[KEYSIZE]) {
-  
+  unsigned char temp[KEYSIZE];
+  int k;
+
+  zero(result);
+  for (k=0;k<KEYSIZE;++k) {
+    multiply_digit(a, b[k], temp);
+    shiftbigger(temp, k);
+    add(temp, result, result);
+  }
+}
+
+void benchmark(int N) {
+  unsigned char a[KEYSIZE];
+  unsigned char b[KEYSIZE];
+  unsigned char c[KEYSIZE];
+  int k;
+  clock_t start, finish;
+  start = clock();
+  for (k=0; k < N; ++k) {
+    multiply(a, b, c);
+  }
+  finish = clock();
+  printf("Multiplies per second: %f", (double)(N*CLOCKS_PER_SEC)/(finish-start));
 }
 
 void main() {
-  unsigned char a[KEYSIZE]; zero(a); a[0] = 243;
-  unsigned char b[KEYSIZE]; zero(b); b[0] = 123;
-  unsigned char c[KEYSIZE]; multiply_digit(a, 3, c);
-
-
-  printf("c[0]=%u, c[1]=%u, c[2]=%u", c[0], c[1], c[2]);
+  benchmark(1000);
 }
