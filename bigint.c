@@ -55,6 +55,13 @@ void multiply(unsigned char a[KEYSIZE], unsigned char b[KEYSIZE], unsigned char 
   }
 }
 
+// display least significant n digits
+void disp(unsigned char a[KEYSIZE], int n) {
+  int k;
+  for (k=0;k<n;++k) { printf("%u ",a[k]); } printf("\n");
+
+}
+
 void benchmark(int N) {
   unsigned char a[KEYSIZE];
   unsigned char b[KEYSIZE];
@@ -66,9 +73,13 @@ void benchmark(int N) {
     multiply(a, b, c);
   }
   finish = clock();
-  printf("Multiplies per second: %f", (double)(N*CLOCKS_PER_SEC)/(finish-start));
+  printf("Multiplies per second: %f\n", (double)(N*CLOCKS_PER_SEC)/(finish-start));
 }
 
 void main() {
   benchmark(1000);
+  unsigned char a[KEYSIZE]; zero(a); a[0] = 2; a[1] = 12;
+  unsigned char b[KEYSIZE]; zero(b); b[0] = 40; b[1] = 3;
+  unsigned char c[KEYSIZE]; multiply(a, b, c);
+  disp(c, 3);
 }
